@@ -48,12 +48,18 @@
             src = ./.;
           
             buildInputs = dependencies;
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            dontConfigure = true;
+            dontBuild = true;
             # buildPhase = ''
-            #   cp $src/bin/lal $out/bin/lal
+            #   mkdir -p $out/bin
             # '';
-            # installPhase = ''
-            #   cp $src/bin/lal $out/bin/lal
-            # '';
+            installPhase = ''
+              mkdir -p $out/bin
+              cp -r $src/build/linux/x64/release/bundle/* $out/bin/
+              wrapProgram $out/bin/control_center \
+                --set LD_LIBRARY_PATH ${pkgs.libepoxy}/lib
+            '';
           };
 
           devShells.default = pkgs.mkShell {
