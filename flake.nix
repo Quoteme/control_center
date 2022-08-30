@@ -62,7 +62,7 @@
             # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3#:~:text=The%20problem%20was%20that%20flutter%20does%20not%20use%20NixOS%20way%20to%20look%20for%20libraries%20during%20linking%20(most%20likely%20a%20bug%20in%20the%20package)%2C%20so%20LD_LIBRARY_PATH%2C%20which%20is%20unused%20on%20NixOS%20must%20be%20set
             shellHook = ''
               export LD_LIBRARY_PATH=${pkgs.libepoxy}/lib:$LD_LIBRARY_PATH
-              export PUB_CACHE="~/.cache/pub_cache"
+              export PUB_CACHE="./.cache/pub_cache"
             '';
           };
         }
