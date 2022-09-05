@@ -60,6 +60,7 @@ class VolumeSlider extends StatefulWidget {
 
 class _VolumeSliderState extends State<VolumeSlider> {
   double _volume = 0.0;
+  IconData _icon = Icons.volume_off;
 
   _VolumeSliderState() {
     syncValues();
@@ -70,7 +71,7 @@ class _VolumeSliderState extends State<VolumeSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.volume_up),
+        Icon(_icon),
         Expanded(child: Slider(
             value: _volume,
             min: 0,
@@ -92,6 +93,9 @@ class _VolumeSliderState extends State<VolumeSlider> {
     setState(() {
       _volume = double.parse(result.stdout);
     });
+    _icon = _volume > 50 ? Icons.volume_up
+          : _volume >  0 ? Icons.volume_down
+          : Icons.volume_mute;
   }
 }
 
@@ -138,13 +142,9 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
     ProcessResult result = await Process.run("brightnessctl", ["get"]);
     setState(() {
       _brightness = double.parse(result.stdout)/255*100;
-      if(_brightness > 100*2/3){
-        _brightnessIcon = Icons.brightness_high;
-      } else if (_brightness > 100*1/3) {
-        _brightnessIcon = Icons.brightness_medium;
-      } else {
-        _brightnessIcon = Icons.brightness_low;
-      }
+      _brightnessIcon = _brightness > 100*2/3 ? Icons.brightness_high
+          : _brightness > 100*1/3 ? Icons.brightness_medium
+          : Icons.brightness_low;
     });
   }
 }
