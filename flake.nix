@@ -16,6 +16,7 @@
         # based on
         # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3
         dependencies = with pkgs; [
+          # dependencies for flutter
           at-spi2-core.dev
           clang
           cmake
@@ -36,6 +37,9 @@
           xorg.libXdmcp
           xorg.libXtst
           cairo.dev
+          # Dependencies for the flutter app
+          brightnessctl
+          pamixer
         ];
       in
         rec {
