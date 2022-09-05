@@ -27,6 +27,30 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [CloseButton(onPressed: () => exit(0),)],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          const VolumeSlider(),
+          const BrightnessSlider(),
+          const Autorotate()
+        ],
+      ),
+    );
+  }
+}
+
 class VolumeSlider extends StatefulWidget {
   const VolumeSlider({Key? key}) : super(key: key);
 
@@ -117,25 +141,37 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class Autorotate extends StatefulWidget {
+  const Autorotate({Key? key}) : super(key: key);
 
-  final String title;
+  @override
+  State<StatefulWidget> createState() => _AutorotateState();
+}
+
+class _AutorotateState extends State<Autorotate> {
+  bool _autorotate = true;
+
+  _AutorotateState(){
+    syncValues();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [CloseButton(onPressed: () => exit(0),)],
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          const VolumeSlider(),
-          const BrightnessSlider(),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Autorotate: '),
+        Checkbox(value: _autorotate, onChanged: (bool? v) => {
+          setState(() => _autorotate = !_autorotate),
+          syncValues()
+        } )
+      ],
     );
+  }
+  void syncValues() async{
+    print("**************************************************");
+    String contents = File('~/.config/autoscreenrotate').readAsStringSync();
+    print(contents);
+    print("**************************************************");
   }
 }
