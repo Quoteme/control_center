@@ -118,9 +118,9 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
         Expanded(child: Slider(
             value: _brightness,
             min: 0,
-            max: 100,
+            max: 255,
             divisions: 40,
-            label: "Brightness ${(_brightness).round()}",
+            label: "Brightness ${((_brightness)/255*100).round()}",
             onChanged: (double v) => {
               Process.run("brightnessctl", ["set", "${v.round()}"]),
               setState(() => _brightness = v )
