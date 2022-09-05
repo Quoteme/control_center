@@ -70,7 +70,7 @@ class _VolumeSliderState extends State<VolumeSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Volume: ${_volume.toStringAsFixed(0)}%'),
+        const Icon(Icons.volume_up),
         Expanded(child: Slider(
             value: _volume,
             min: 0,
@@ -104,6 +104,7 @@ class BrightnessSlider extends StatefulWidget {
 
 class _BrightnessSliderState extends State<BrightnessSlider> {
   double _brightness = 0.0;
+  IconData _brightnessIcon = Icons.brightness_medium;
 
   _BrightnessSliderState(){
     syncValues();
@@ -114,19 +115,19 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Brightness: ${_brightness.toStringAsFixed(0)}%'),
+        Icon(_brightnessIcon),
         Expanded(child: Slider(
             value: _brightness,
             min: 0,
-            max: 255,
+            max: 100,
             divisions: 40,
-            label: "Brightness ${((_brightness)/255*100).round()}",
+            label: "Brightness ${(_brightness).round()}",
             onChanged: (double v) => {
-              Process.run("brightnessctl", ["set", "${v.round()}"]),
+              Process.run("brightnessctl", ["set", "${v.round()/100*255}"]),
               setState(() => _brightness = v )
             },
             onChangeEnd: (double v) => {
-              Process.run("brightnessctl", ["set", "${v.round()}"]),
+              Process.run("brightnessctl", ["set", "${v.round()/100*255}"]),
               syncValues()
             }
         )),
@@ -136,7 +137,14 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
   void syncValues() async{
     ProcessResult result = await Process.run("brightnessctl", ["get"]);
     setState(() {
-      _brightness = double.parse(result.stdout);
+      _brightness = double.parse(result.stdout)/255*100;
+      if(_brightness > 100*2/3){
+        _brightnessIcon = Icons.brightness_high;
+      } else if (_brightness > 100*1/3) {
+        _brightnessIcon = Icons.brightness_medium;
+      } else {
+        _brightnessIcon = Icons.brightness_low;
+      }
     });
   }
 }
@@ -160,7 +168,7 @@ class _AutorotateState extends State<Autorotate> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Autorotate: '),
+        const Text('Autorotate: '),
         Checkbox(value: _autorotate, onChanged: (bool? v) => {
           setState(() => _autorotate = !_autorotate),
           syncValues()
