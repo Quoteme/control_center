@@ -7,6 +7,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:numtide/flake-utils";
     };
+    screenrotate.url = "github:Quoteme/screenrotate";
+    screenrotate.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
@@ -40,30 +42,18 @@
           # Dependencies for the flutter app
           brightnessctl
           pamixer
+          inputs.screenrotate.defaultPackage.x86_64-linux
         ];
       in
         rec {
           defaultPackage = packages.control_center;
 
-          packages.control_center = pkgs.stdenv.mkDerivation {
-            name = "control_center";
+          packages.control_center = pkgs.flutter.mkFlutterApp rec {
             pname = "control_center";
-            version = "1.0";
+            version = "0.0.1";
+            buildInputs = [pkgs.brightnessctl pkgs.pamixer inputs.screenrotate.defaultPackage.x86_64-linux];
             src = ./.;
-          
-            buildInputs = dependencies;
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-            dontConfigure = true;
-            dontBuild = true;
-            # buildPhase = ''
-            #   mkdir -p $out/bin
-            # '';
-            installPhase = ''
-              mkdir -p $out/bin
-              cp -r $src/build/linux/x64/release/bundle/* $out/bin/
-              wrapProgram $out/bin/control_center \
-                --set LD_LIBRARY_PATH ${pkgs.libepoxy}/lib
-            '';
+            vendorHash = "sha256-bK7f3epATMtiijNd7bIzH5TrI/IDohsMPzQb0NZddac=";
           };
 
           devShells.default = pkgs.mkShell {
