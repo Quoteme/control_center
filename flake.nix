@@ -17,6 +17,14 @@
         pkgs = import nixpkgs { inherit system; };
         # based on
         # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3
+        appdeps = with pkgs; [
+          libnotify
+          brightnessctl
+          pamixer
+          playerctl
+          inputs.screenrotate.defaultPackage.x86_64-linux
+          power-profiles-daemon
+        ];
         dependencies = with pkgs; [
           # dependencies for flutter
           at-spi2-core.dev
@@ -40,10 +48,7 @@
           xorg.libXtst
           cairo.dev
           # Dependencies for the flutter app
-          brightnessctl
-          pamixer
-          inputs.screenrotate.defaultPackage.x86_64-linux
-        ];
+        ] ++ appdeps;
       in
         rec {
           defaultPackage = packages.control_center;
@@ -51,7 +56,7 @@
           packages.control_center = pkgs.flutter.mkFlutterApp rec {
             pname = "control_center";
             version = "0.0.1";
-            buildInputs = [pkgs.brightnessctl pkgs.pamixer inputs.screenrotate.defaultPackage.x86_64-linux];
+            buildInputs = appdeps;
             src = ./.;
             vendorHash = "sha256-bK7f3epATMtiijNd7bIzH5TrI/IDohsMPzQb0NZddac=";
           };

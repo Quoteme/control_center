@@ -48,12 +48,90 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              const PlayerCtl(),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const [
+                    Autorotate(),
+                    InputDisable(),
+                    PowerProfile()
+                  ]),
               const VolumeSlider(),
-              const BrightnessSlider(),
-              const Autorotate()
+              const BrightnessSlider()
             ],
           )),
     );
+  }
+}
+
+class PlayerCtl extends StatefulWidget {
+  const PlayerCtl({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _PlayerCtl();
+}
+
+class _PlayerCtl extends State<PlayerCtl> {
+  final double _length = 0;
+  double _position = 0;
+  final String _album = '';
+  final String _artist = '';
+  final String _title = '';
+  String _status = '';
+
+  _PlayerCtl() {
+    syncValues();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.skip_previous),
+          onPressed: () => Process.run('playerctl', ['previous']),
+        ),
+        IconButton(
+          icon: Icon(_status == 'Paused' ? Icons.pause : Icons.play_arrow),
+          onPressed: () => {
+            Process.run('playerctl', ['play-pause']),
+            _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
+            syncValues()
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.skip_next),
+          onPressed: () => Process.run('playerctl', ['next']),
+        ),
+        Text(_title),
+        Text(_artist),
+        Text(_album),
+        Text(_status),
+        Slider(
+          value: _position,
+          min: 0,
+          max: _length,
+          onChanged: (double value) {
+            setState(() {
+              _position = value;
+              // runCmd('playerctl position ${value.toInt()}');
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  void syncValues() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    ProcessResult readStatus = await Process.run("playerctl", ["status"]);
+    setState(() {
+      _status = readStatus.stdout.toString().trim();
+    });
+    // print(readStatus.stdout.trim());
+    // print(_status.trim() == 'Playing');
+    // print("lal");
   }
 }
 
@@ -78,10 +156,12 @@ class _VolumeSliderState extends State<VolumeSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(onPressed: () => {
-          Process.run("pamixer", ["--toggle-mute"]),
-          syncValues()
-        }, icon: Icon(_icon)),
+        IconButton(
+            onPressed: () => {
+                  Process.run("pamixer", ["--toggle-mute"]),
+                  syncValues()
+                },
+            icon: Icon(_icon)),
         Expanded(
             child: Slider(
                 value: _volume,
@@ -102,18 +182,17 @@ class _VolumeSliderState extends State<VolumeSlider> {
   void syncValues() async {
     ProcessResult readVolume = await Process.run("pamixer", ["--get-volume"]);
     ProcessResult readMute = await Process.run("pamixer", ["--get-mute"]);
-    print(readMute.stdout);
     setState(() {
       _volume = double.parse(readVolume.stdout);
-      _muted = readMute.stdout == "true\n";
+      _muted = readMute.stdout.trim() == "true";
     });
     _icon = _muted
         ? Icons.volume_off
         : _volume > 50
-        ? Icons.volume_up
-        : _volume > 0
-            ? Icons.volume_down
-            : Icons.volume_mute;
+            ? Icons.volume_up
+            : _volume > 0
+                ? Icons.volume_down
+                : Icons.volume_mute;
   }
 }
 
@@ -205,9 +284,8 @@ class _AutorotateState extends State<Autorotate> {
 
   void syncValues() async {
     String home = Platform.environment['HOME'] ?? "";
-    String contents =
-        File(home + '/.config/autoscreenrotate').readAsStringSync();
-    if (contents == "true\n") {
+    String contents = File('$home/.config/autoscreenrotate').readAsStringSync();
+    if (contents.trim() == "true") {
       setState(() {
         _autorotate = true;
         _icon = Icons.screen_rotation;
@@ -218,6 +296,105 @@ class _AutorotateState extends State<Autorotate> {
         _icon = Icons.screen_lock_rotation;
       });
     }
+  }
+}
+
+class InputDisable extends StatefulWidget {
+  const InputDisable({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _InputDisableState();
+}
+
+class _InputDisableState extends State<InputDisable> {
+  bool _inputDisabled = true;
+
+  _InputDisableState() {
+    syncValues();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      IconButton(
+        icon: Icon(Icons.keyboard,
+            color: _inputDisabled ? Colors.green : Colors.red),
+        tooltip: "InputDisable",
+        onPressed: () =>
+            {Process.run("toggledisableinput.sh", []), syncValues()},
+      ),
+      Text("Input: ${_inputDisabled ? "always-on" : "auto disable"}")
+    ]);
+  }
+
+  void syncValues() async {
+    String home = Platform.environment['HOME'] ?? "";
+    String contents = File('$home/.config/disableinput').readAsStringSync();
+    if (contents.trim() == "true") {
+      setState(() {
+        _inputDisabled = true;
+      });
+    } else {
+      setState(() {
+        _inputDisabled = false;
+      });
+    }
+  }
+}
+
+class PowerProfile extends StatefulWidget {
+  const PowerProfile({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _PowerProfileState();
+}
+
+class _PowerProfileState extends State<PowerProfile> {
+  final List<bool> _isSelected = [true, false, false];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ToggleButtons(
+            isSelected: _isSelected,
+            children: const [
+              Icon(Icons.energy_savings_leaf),
+              Icon(Icons.bolt),
+              Icon(Icons.fitness_center)
+            ],
+            onPressed: (int index) {
+              setState(() {
+                for (int i = 0; i < _isSelected.length; i++) {
+                  _isSelected[i] = i == index;
+                }
+                if (index == 0) {
+                  Process.run("powerprofilesctl", ["set", "power-saver"]);
+                  Process.run("notify-send",
+                      ["power profile changed", "power-saver mode"]);
+                } else if (index == 1) {
+                  Process.run("powerprofilesctl", ["set", "balanced "]);
+                  Process.run("notify-send",
+                      ["power profile changed", "balanced mode"]);
+                } else if (index == 2) {
+                  Process.run("powerprofilesctl", ["set", "performance"]);
+                  Process.run("notify-send",
+                      ["power profile changed", "performance mode"]);
+                }
+              });
+            }),
+        const Text("haha")
+      ],
+    );
+  }
+
+  void syncValues() async {
+    ProcessResult result = await Process.run("powerprofilesctl", ["get"]);
+    setState(() {
+      _isSelected[0] = result.stdout.contains("power-saver");
+      _isSelected[1] = result.stdout.contains("balanced");
+      _isSelected[2] = result.stdout.contains("performance");
+    });
   }
 }
 
