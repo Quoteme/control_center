@@ -59,6 +59,10 @@
             buildInputs = appdeps;
             src = ./.;
             vendorHash = "sha256-6xEBN7+IFqDiRKidTNWSPgKJ7R1tcpsaSFSSBeubTbg=";
+            postInstall = ''
+              cp $src/toggle_control_center.sh $out/bin
+              chmod +x $out/bin/toggle_control_center.sh
+            '';
           };
 
           devShells.default = pkgs.mkShell {
