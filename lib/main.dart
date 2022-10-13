@@ -20,6 +20,10 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.deepPurple,
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(color: Colors.grey),
+          bodyText2: TextStyle(color: Colors.grey),
+        ),
       ),
       themeMode: ThemeMode.dark,
       home: const MyHomePage(title: 'Control Center'),
@@ -48,7 +52,9 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              const PlayerCtl(),
+              const VolumeSlider(),
+              const BrightnessSlider(),
+              const Divider(),
               Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
@@ -56,8 +62,8 @@ class MyHomePage extends StatelessWidget {
                     InputDisable(),
                     PowerProfile()
                   ]),
-              const VolumeSlider(),
-              const BrightnessSlider()
+              const Divider(),
+              const PlayerCtl(),
             ],
           )),
     );
@@ -73,10 +79,10 @@ class PlayerCtl extends StatefulWidget {
 
 class _PlayerCtl extends State<PlayerCtl> {
   final double _length = 0;
-  double _position = 0;
+  final double _position = 0;
   final String _album = '';
-  final String _artist = '';
-  final String _title = '';
+  String _artist = '';
+  String _title = '';
   String _status = '';
 
   _PlayerCtl() {
@@ -85,40 +91,33 @@ class _PlayerCtl extends State<PlayerCtl> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        IconButton(
-          icon: const Icon(Icons.skip_previous),
-          onPressed: () => Process.run('playerctl', ['previous']),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.skip_previous),
+              onPressed: () => Process.run('playerctl', ['previous']),
+            ),
+            IconButton(
+              icon: Icon(_status == 'Paused' ? Icons.pause : Icons.play_arrow),
+              onPressed: () => {
+                Process.run('playerctl', ['play-pause']),
+                _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
+                syncValues()
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.skip_next),
+              onPressed: () => Process.run('playerctl', ['next']),
+            ),
+            // Text(_album),
+            // Text(_status),
+          ],
         ),
-        IconButton(
-          icon: Icon(_status == 'Paused' ? Icons.pause : Icons.play_arrow),
-          onPressed: () => {
-            Process.run('playerctl', ['play-pause']),
-            _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
-            syncValues()
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.skip_next),
-          onPressed: () => Process.run('playerctl', ['next']),
-        ),
-        Text(_title),
         Text(_artist),
-        Text(_album),
-        Text(_status),
-        Slider(
-          value: _position,
-          min: 0,
-          max: _length,
-          onChanged: (double value) {
-            setState(() {
-              _position = value;
-              // runCmd('playerctl position ${value.toInt()}');
-            });
-          },
-        ),
+        Text(_title),
       ],
     );
   }
@@ -126,8 +125,14 @@ class _PlayerCtl extends State<PlayerCtl> {
   void syncValues() async {
     await Future.delayed(const Duration(milliseconds: 200));
     ProcessResult readStatus = await Process.run("playerctl", ["status"]);
+    ProcessResult readTitle =
+        await Process.run("playerctl", ["metadata", "title"]);
+    ProcessResult readArtist =
+        await Process.run("playerctl", ["metadata", "artist"]);
     setState(() {
       _status = readStatus.stdout.toString().trim();
+      _title = readTitle.stdout.toString().trim();
+      _artist = readArtist.stdout.toString().trim();
     });
     // print(readStatus.stdout.trim());
     // print(_status.trim() == 'Playing');
@@ -216,7 +221,7 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(_brightnessIcon),
+        IconButton(onPressed: () => {}, icon: Icon(_brightnessIcon)),
         Expanded(
             child: Slider(
                 value: _brightness,
@@ -287,12 +292,12 @@ class _AutorotateState extends State<Autorotate> {
     String contents = File('$home/.config/autoscreenrotate').readAsStringSync();
     if (contents.trim() == "true") {
       setState(() {
-        _autorotate = true;
+        _autorotate = false;
         _icon = Icons.screen_rotation;
       });
     } else {
       setState(() {
-        _autorotate = false;
+        _autorotate = true;
         _icon = Icons.screen_lock_rotation;
       });
     }
@@ -332,11 +337,11 @@ class _InputDisableState extends State<InputDisable> {
     String contents = File('$home/.config/disableinput').readAsStringSync();
     if (contents.trim() == "true") {
       setState(() {
-        _inputDisabled = true;
+        _inputDisabled = false;
       });
     } else {
       setState(() {
-        _inputDisabled = false;
+        _inputDisabled = true;
       });
     }
   }
@@ -383,18 +388,8 @@ class _PowerProfileState extends State<PowerProfile> {
                 }
               });
             }),
-        const Text("haha")
       ],
     );
-  }
-
-  void syncValues() async {
-    ProcessResult result = await Process.run("powerprofilesctl", ["get"]);
-    setState(() {
-      _isSelected[0] = result.stdout.contains("power-saver");
-      _isSelected[1] = result.stdout.contains("balanced");
-      _isSelected[2] = result.stdout.contains("performance");
-    });
   }
 }
 

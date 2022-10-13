@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
 set(BINARY_NAME "control_center")
-set(APPLICATION_ID "com.example.control_center")
+set(APPLICATION_ID "io.github.quoteme.control_center")
 
 cmake_policy(SET CMP0063 NEW)
 

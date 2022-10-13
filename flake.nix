@@ -58,7 +58,7 @@
             version = "0.0.1";
             buildInputs = appdeps;
             src = ./.;
-            vendorHash = "sha256-bK7f3epATMtiijNd7bIzH5TrI/IDohsMPzQb0NZddac=";
+            vendorHash = "sha256-6xEBN7+IFqDiRKidTNWSPgKJ7R1tcpsaSFSSBeubTbg=";
           };
 
           devShells.default = pkgs.mkShell {
