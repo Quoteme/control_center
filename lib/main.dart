@@ -101,7 +101,7 @@ class _PlayerCtl extends State<PlayerCtl> {
               onPressed: () => Process.run('playerctl', ['previous']),
             ),
             IconButton(
-              icon: Icon(_status == 'Paused' ? Icons.pause : Icons.play_arrow),
+              icon: Icon(_status != 'Paused' ? Icons.pause : Icons.play_arrow),
               onPressed: () => {
                 Process.run('playerctl', ['play-pause']),
                 _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
