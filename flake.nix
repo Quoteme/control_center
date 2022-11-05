@@ -63,7 +63,7 @@
               cp $src/toggle_control_center.sh $out/bin
               chmod +x $out/bin/toggle_control_center.sh
               wrapProgram $out/bin/toggle_control_center.sh \
-                --prefix PATH : ${pkgs.lib.makeBinPath appdeps} : ${playerctl/bin}
+                --prefix PATH : ${pkgs.lib.makeBinPath appdeps} : ${pkgs.playerctl}/bin
             '';
           };
 
