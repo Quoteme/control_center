@@ -58,12 +58,13 @@
             version = "0.0.1";
             buildInputs = appdeps;
             src = ./.;
-            vendorHash = "sha256-6xEBN7+IFqDiRKidTNWSPgKJ7R1tcpsaSFSSBeubTbg=";
+            vendorHash = "sha256-eMlhgNy3tIFOBJ3rmvQvO7LSeEX+L77NF4/gCpRbQX8=";
             postInstall = ''
               cp $src/toggle_control_center.sh $out/bin
               chmod +x $out/bin/toggle_control_center.sh
               wrapProgram $out/bin/toggle_control_center.sh \
-                --prefix PATH : ${pkgs.lib.makeBinPath appdeps} : ${pkgs.playerctl}/bin
+              --prefix PATH : ${pkgs.lib.makeBinPath appdeps} \
+              --prefix PATH : ${pkgs.playerctl}/bin
             '';
           };
 
