@@ -69,7 +69,8 @@ class MyHomePage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: const [
-                        WindowLayout()
+                        WindowLayout(),
+                        WindowNavigation(),
                         // Wifi(),
                         // Bluetooth(),
                         // AirplaneMode()
@@ -476,6 +477,29 @@ class _WindowLayoutState extends State<WindowLayout> {
             });
   }
 
+}
+
+class WindowNavigation extends StatefulWidget {
+  const WindowNavigation({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _WindowNavigationState();
+}
+
+class _WindowNavigationState extends State<WindowNavigation> {
+  String _lastFocusedWindow = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return ToggleButtons(children: [
+      const Icon(Icons.arrow_back),
+      const Icon(Icons.arrow_forward),
+    ], isSelected: [false, false],
+    onPressed: (int i) => {
+      if (i==0) Process.run("xmonadctl", ["WINDOW", "rotate-unfocused-up"]),
+      if (i==1) Process.run("xmonadctl", ["WINDOW", "rotate-unfocused-down"]),
+    });
+  }
 }
 
 // Performance mode toggle buttons

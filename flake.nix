@@ -31,6 +31,7 @@
           inputs.screenrotate.defaultPackage.x86_64-linux
           power-profiles-daemon
           xmonadctl
+          xdotool
         ];
         dependencies = with pkgs; [
           # dependencies for flutter
