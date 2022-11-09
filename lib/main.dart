@@ -64,14 +64,17 @@ class MyHomePage extends StatelessWidget {
                         InputDisable(),
                         PowerProfile()
                       ]),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: const [
-                      WindowLayout()
-                      // Wifi(),
-                      // Bluetooth(),
-                      // AirplaneMode()
-                    ],
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: const [
+                        WindowLayout()
+                        // Wifi(),
+                        // Bluetooth(),
+                        // AirplaneMode()
+                      ],
+                    ),
                   )
                 ],
               ),
