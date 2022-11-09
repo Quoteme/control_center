@@ -373,9 +373,12 @@ class PowerProfile extends StatefulWidget {
 class _PowerProfileState extends State<PowerProfile> {
   final List<bool> _isSelected = [true, false, false];
 
+  _PowerProfileState() {
+    syncValues();
+  }
+
   @override
   Widget build(BuildContext context) {
-    syncValues();
     return Column(
       children: [
         ToggleButtons(
