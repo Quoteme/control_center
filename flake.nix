@@ -17,6 +17,12 @@
         pkgs = import nixpkgs { inherit system; };
         # based on
         # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3
+        xmonadctl = (pkgs.callPackage (pkgs.fetchFromGitHub {
+          owner = "quoteme";
+          repo = "xmonadctl";
+          rev = "v1.0";
+          sha256 = "1bjf3wnxsghfb64jji53m88vpin916yqlg3j0r83kz9k79vqzqxd";
+        }) {} );
         appdeps = with pkgs; [
           libnotify
           brightnessctl
@@ -24,6 +30,7 @@
           playerctl
           inputs.screenrotate.defaultPackage.x86_64-linux
           power-profiles-daemon
+          xmonadctl
         ];
         dependencies = with pkgs; [
           # dependencies for flutter
@@ -64,7 +71,8 @@
               chmod +x $out/bin/toggle_control_center.sh
               wrapProgram $out/bin/toggle_control_center.sh \
               --prefix PATH : ${pkgs.lib.makeBinPath appdeps} \
-              --prefix PATH : ${pkgs.playerctl}/bin
+              --prefix PATH : ${pkgs.playerctl}/bin \
+              --prefix PATH : ${xmonadctl}/bin
             '';
           };
 
