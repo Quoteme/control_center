@@ -359,6 +359,7 @@ class _PowerProfileState extends State<PowerProfile> {
 
   @override
   Widget build(BuildContext context) {
+    syncValues();
     return Column(
       children: [
         ToggleButtons(
@@ -390,6 +391,29 @@ class _PowerProfileState extends State<PowerProfile> {
             }),
       ],
     );
+  }
+
+  void syncValues() async {
+    ProcessResult result = await Process.run("powerprofilesctl", ["get"]);
+    if (result.stdout.trim() == "power-saver") {
+      setState(() {
+        _isSelected[0] = true;
+        _isSelected[1] = false;
+        _isSelected[2] = false;
+      });
+    } else if (result.stdout.trim() == "balanced") {
+      setState(() {
+        _isSelected[0] = false;
+        _isSelected[1] = true;
+        _isSelected[2] = false;
+      });
+    } else if (result.stdout.trim() == "performance") {
+      setState(() {
+        _isSelected[0] = false;
+        _isSelected[1] = false;
+        _isSelected[2] = true;
+      });
+    }
   }
 }
 
