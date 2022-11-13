@@ -645,8 +645,6 @@ class _WindowLayoutState extends State<WindowLayout> {
             }
             var selectedLayout = _layouts.entries.elementAt(index).key;
             Process.run("xmonadctl", ["LAYOUT", selectedLayout]);
-            Process.run("notify-send",
-                ["XMonad layout", "Changed to layout $selectedLayout"]);
           });
         });
   }
