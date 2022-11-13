@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+const buttonActiveColor = Colors.deepPurple;
+const buttonInactiveColor = Colors.grey;
+
 void main() {
   runApp(const MyApp());
 }
@@ -307,7 +310,7 @@ class _AutorotateState extends State<Autorotate> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: IconButton(
-          icon: Icon(_icon, color: _autorotate ? Colors.green : Colors.red),
+          icon: Icon(_icon, color: _autorotate ? buttonActiveColor : buttonInactiveColor),
           tooltip: "Autorotate: ${_autorotate ? "On" : "Off"}",
           onPressed: () => {
             Process.run("toggleautoscreenrotation.sh", []),
@@ -359,7 +362,7 @@ class _InputDisableState extends State<InputDisable> {
             borderRadius: BorderRadius.circular(10)),
         child: IconButton(
           icon: Icon(Icons.keyboard,
-              color: _inputDisabled ? Colors.green : Colors.red),
+              color: _inputDisabled ? buttonActiveColor : buttonInactiveColor),
           tooltip: "Input: ${_inputDisabled ? "always-on" : "auto disable"}",
           onPressed: () =>
               {Process.run("toggledisableinput.sh", []), syncValues()},
@@ -407,7 +410,7 @@ class _BluetoothWidtget extends State<BluetoothWidtget> {
       child: IconButton(
           icon: Icon(
               _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
-              color: _bluetoothDisabled ? Colors.red : Colors.green),
+              color: _bluetoothDisabled ? buttonInactiveColor : buttonActiveColor),
           tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
           onPressed: () => {
             Process.run("rfkill", ["toggle", "bluetooth"]),
@@ -450,7 +453,7 @@ class _WifiWidget extends State<WifiWidget> {
       child: IconButton(
           icon: Icon(
               _wifiDisabled ? Icons.wifi_off : Icons.wifi,
-              color: _wifiDisabled ? Colors.red : Colors.green),
+              color: _wifiDisabled ? buttonInactiveColor : buttonActiveColor),
           tooltip: "Wifi: ${_wifiDisabled ? "Off" : "On"}",
           onPressed: () => {
             Process.run("rfkill", ["toggle", "wifi"]),
