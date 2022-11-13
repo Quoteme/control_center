@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Home Pages
+
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -62,7 +64,7 @@ class MyHomePage extends StatelessWidget {
                       children: const [
                         Autorotate(),
                         InputDisable(),
-                        PowerProfile()
+                        BluetoothWidtget(),
                       ]),
                   Container(
                     margin: const EdgeInsets.only(top: 20),
@@ -71,6 +73,7 @@ class MyHomePage extends StatelessWidget {
                       children: const [
                         WindowLayout(),
                         WindowNavigation(),
+                        PowerProfile()
                         // Wifi(),
                         // Bluetooth(),
                         // AirplaneMode()
@@ -86,6 +89,8 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
+
+// Music controls
 
 class PlayerCtl extends StatefulWidget {
   const PlayerCtl({Key? key}) : super(key: key);
@@ -156,6 +161,8 @@ class _PlayerCtl extends State<PlayerCtl> {
     // print("lal");
   }
 }
+
+// Sliders
 
 class VolumeSlider extends StatefulWidget {
   const VolumeSlider({Key? key}) : super(key: key);
@@ -273,6 +280,8 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
   }
 }
 
+// Button Widgets
+
 class Autorotate extends StatefulWidget {
   const Autorotate({Key? key}) : super(key: key);
 
@@ -363,6 +372,44 @@ class _InputDisableState extends State<InputDisable> {
     }
   }
 }
+
+class BluetoothWidtget extends StatefulWidget {
+  const BluetoothWidtget({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _BluetoothWidtget();
+}
+
+class _BluetoothWidtget extends State<BluetoothWidtget> {
+  bool _bluetoothDisabled = true;
+
+  _BluetoothWidtget() {
+    syncValues();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        icon: Icon(
+            _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
+            color: _bluetoothDisabled ? Colors.red : Colors.green),
+        tooltip: "BluetoothWidtget",
+        onPressed: () => {
+          Process.run("rfkill", ["toggle", "bluetooth"]),
+          syncValues()
+        },
+      );
+  }
+
+  void syncValues() async {
+    ProcessResult result = await Process.run("rfkill", ["list", "bluetooth"]);
+    print(result.stdout);
+    setState(() {
+      _bluetoothDisabled = result.stdout.contains("Soft blocked: yes");
+    });
+  }
+}
+// Selection Widgets
 
 class PowerProfile extends StatefulWidget {
   const PowerProfile({Key? key}) : super(key: key);
@@ -460,23 +507,20 @@ class _WindowLayoutState extends State<WindowLayout> {
   @override
   Widget build(BuildContext context) {
     return ToggleButtons(
-            isSelected: _isSelected,
-            children: _layouts.entries
-                .map((e) => Icon(e.value))
-                .toList(),
-            onPressed: (int index) {
-              setState(() {
-                for (int i = 0; i < _isSelected.length; i++) {
-                  _isSelected[i] = i == index;
-                }
-                var selectedLayout = _layouts.entries.elementAt(index).key;
-                Process.run("xmonadctl", ["LAYOUT", selectedLayout]);
-                Process.run("notify-send",
-                    ["XMonad layout", "Changed to layout $selectedLayout"]);
-              });
-            });
+        isSelected: _isSelected,
+        children: _layouts.entries.map((e) => Icon(e.value)).toList(),
+        onPressed: (int index) {
+          setState(() {
+            for (int i = 0; i < _isSelected.length; i++) {
+              _isSelected[i] = i == index;
+            }
+            var selectedLayout = _layouts.entries.elementAt(index).key;
+            Process.run("xmonadctl", ["LAYOUT", selectedLayout]);
+            Process.run("notify-send",
+                ["XMonad layout", "Changed to layout $selectedLayout"]);
+          });
+        });
   }
-
 }
 
 class WindowNavigation extends StatefulWidget {
@@ -491,14 +535,21 @@ class _WindowNavigationState extends State<WindowNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return ToggleButtons(children: [
-      const Icon(Icons.arrow_back),
-      const Icon(Icons.arrow_forward),
-    ], isSelected: [false, false],
-    onPressed: (int i) => {
-      if (i==0) Process.run("xmonadctl", ["WINDOW", "rotate-unfocused-up"]),
-      if (i==1) Process.run("xmonadctl", ["WINDOW", "rotate-unfocused-down"]),
-    });
+    return ToggleButtons(
+        children: [
+          const Icon(Icons.arrow_back),
+          const Icon(Icons.arrow_forward),
+        ],
+        isSelected: [
+          false,
+          false
+        ],
+        onPressed: (int i) => {
+              if (i == 0)
+                Process.run("xmonadctl", ["WINDOW", "rotate-unfocused-up"]),
+              if (i == 1)
+                Process.run("xmonadctl", ["WINDOW", "rotate-unfocused-down"]),
+            });
   }
 }
 
