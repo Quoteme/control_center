@@ -65,6 +65,7 @@ class MyHomePage extends StatelessWidget {
                         Autorotate(),
                         InputDisable(),
                         BluetoothWidtget(),
+                        WifiWidget(),
                       ]),
                   Container(
                     margin: const EdgeInsets.only(top: 20),
@@ -307,7 +308,7 @@ class _AutorotateState extends State<Autorotate> {
         ),
         child: IconButton(
           icon: Icon(_icon, color: _autorotate ? Colors.green : Colors.red),
-          tooltip: "Autorotate",
+          tooltip: "Autorotate: ${_autorotate ? "On" : "Off"}",
           onPressed: () => {
             Process.run("toggleautoscreenrotation.sh", []),
             setState(() => _autorotate = !_autorotate),
@@ -315,7 +316,6 @@ class _AutorotateState extends State<Autorotate> {
           },
         ),
       ),
-      Text("Autorotate: ${_autorotate ? "On" : "Off"}")
     ]);
   }
 
@@ -360,12 +360,11 @@ class _InputDisableState extends State<InputDisable> {
         child: IconButton(
           icon: Icon(Icons.keyboard,
               color: _inputDisabled ? Colors.green : Colors.red),
-          tooltip: "InputDisable",
+          tooltip: "Input: ${_inputDisabled ? "always-on" : "auto disable"}",
           onPressed: () =>
               {Process.run("toggledisableinput.sh", []), syncValues()},
         ),
       ),
-      Text("Input: ${_inputDisabled ? "always-on" : "auto disable"}")
     ]);
   }
 
@@ -409,7 +408,7 @@ class _BluetoothWidtget extends State<BluetoothWidtget> {
           icon: Icon(
               _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
               color: _bluetoothDisabled ? Colors.red : Colors.green),
-          tooltip: "BluetoothWidtget",
+          tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
           onPressed: () => {
             Process.run("rfkill", ["toggle", "bluetooth"]),
             syncValues()
@@ -426,6 +425,50 @@ class _BluetoothWidtget extends State<BluetoothWidtget> {
     });
   }
 }
+
+class WifiWidget extends StatefulWidget {
+  const WifiWidget({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _WifiWidget();
+}
+
+class _WifiWidget extends State<WifiWidget> {
+  bool _wifiDisabled = true;
+
+  _WifiWidget() {
+    syncValues();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.black26,
+      ),
+      child: IconButton(
+          icon: Icon(
+              _wifiDisabled ? Icons.wifi_off : Icons.wifi,
+              color: _wifiDisabled ? Colors.red : Colors.green),
+          tooltip: "Wifi: ${_wifiDisabled ? "Off" : "On"}",
+          onPressed: () => {
+            Process.run("rfkill", ["toggle", "wifi"]),
+            syncValues()
+          },
+        ),
+    );
+  }
+
+  void syncValues() async {
+    ProcessResult result = await Process.run("rfkill", ["list", "wifi"]);
+    print(result.stdout);
+    setState(() {
+      _wifiDisabled = result.stdout.contains("Soft blocked: yes");
+    });
+  }
+}
+
 // Selection Widgets
 
 class PowerProfile extends StatefulWidget {
