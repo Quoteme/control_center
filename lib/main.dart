@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-const buttonActiveColor = Colors.deepPurple;
-const buttonInactiveColor = Colors.white24;
-const buttonBackgroundColor = Colors.black26;
+const primaryColor = Colors.green;
+const secondaryColor = Colors.white24;
+const primaryBackgroundColor = Colors.black54;
+const secondaryBackgroundColor = Colors.black54;
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +24,22 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: primaryColor,
+        scaffoldBackgroundColor: secondaryBackgroundColor,
+        cardColor: primaryBackgroundColor,
+        toggleButtonsTheme: ToggleButtonsThemeData(
+          color: secondaryColor,
+          selectedColor: primaryColor,
+          fillColor: primaryBackgroundColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        dividerTheme: DividerThemeData(
+          color: secondaryColor,
+          thickness: 1,
+          space: 40,
+        ),
+        iconTheme: const IconThemeData(color: primaryColor),
+        backgroundColor: secondaryBackgroundColor,
         textTheme: const TextTheme(
           bodyText1: TextStyle(color: Colors.grey),
           bodyText2: TextStyle(color: Colors.grey),
@@ -193,10 +209,10 @@ class _VolumeSliderState extends State<VolumeSlider> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: buttonBackgroundColor,
+            color: primaryBackgroundColor,
           ),
           child: IconButton(
-            color: _muted ? buttonInactiveColor : buttonActiveColor,
+              color: _muted ? secondaryColor : primaryColor,
               onPressed: () => {
                     Process.run("pamixer", ["--toggle-mute"]),
                     syncValues()
@@ -259,12 +275,13 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: buttonBackgroundColor,
+            color: primaryBackgroundColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: IconButton(
-            color: buttonActiveColor,
-            onPressed: () => {}, icon: Icon(_brightnessIcon)),
+              color: primaryColor,
+              onPressed: () => {},
+              icon: Icon(_brightnessIcon)),
         ),
         Expanded(
             child: Slider(
@@ -322,11 +339,11 @@ class _AutorotateState extends State<Autorotate> {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         decoration: BoxDecoration(
-          color: buttonBackgroundColor,
+          color: primaryBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: IconButton(
-          icon: Icon(_icon, color: _autorotate ? buttonActiveColor : buttonInactiveColor),
+          icon: Icon(_icon, color: _autorotate ? primaryColor : secondaryColor),
           tooltip: "Autorotate: ${_autorotate ? "On" : "Off"}",
           onPressed: () => {
             Process.run("toggleautoscreenrotation.sh", []),
@@ -374,11 +391,11 @@ class _InputDisableState extends State<InputDisable> {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         decoration: BoxDecoration(
-            color: buttonBackgroundColor,
+            color: primaryBackgroundColor,
             borderRadius: BorderRadius.circular(10)),
         child: IconButton(
           icon: Icon(Icons.keyboard,
-              color: _inputDisabled ? buttonActiveColor : buttonInactiveColor),
+              color: _inputDisabled ? primaryColor : secondaryColor),
           tooltip: "Input: ${_inputDisabled ? "always-on" : "auto disable"}",
           onPressed: () =>
               {Process.run("toggledisableinput.sh", []), syncValues()},
@@ -421,18 +438,18 @@ class _BluetoothWidtget extends State<BluetoothWidtget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: buttonBackgroundColor,
+        color: primaryBackgroundColor,
       ),
       child: IconButton(
-          icon: Icon(
-              _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
-              color: _bluetoothDisabled ? buttonInactiveColor : buttonActiveColor),
-          tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
-          onPressed: () => {
-            Process.run("rfkill", ["toggle", "bluetooth"]),
-            syncValues()
-          },
-        ),
+        icon: Icon(
+            _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
+            color: _bluetoothDisabled ? secondaryColor : primaryColor),
+        tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
+        onPressed: () => {
+          Process.run("rfkill", ["toggle", "bluetooth"]),
+          syncValues()
+        },
+      ),
     );
   }
 
@@ -464,18 +481,17 @@ class _WifiWidget extends State<WifiWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: buttonBackgroundColor,
+        color: primaryBackgroundColor,
       ),
       child: IconButton(
-          icon: Icon(
-              _wifiDisabled ? Icons.wifi_off : Icons.wifi,
-              color: _wifiDisabled ? buttonInactiveColor : buttonActiveColor),
-          tooltip: "Wifi: ${_wifiDisabled ? "Off" : "On"}",
-          onPressed: () => {
-            Process.run("rfkill", ["toggle", "wifi"]),
-            syncValues()
-          },
-        ),
+        icon: Icon(_wifiDisabled ? Icons.wifi_off : Icons.wifi,
+            color: _wifiDisabled ? secondaryColor : primaryColor),
+        tooltip: "Wifi: ${_wifiDisabled ? "Off" : "On"}",
+        onPressed: () => {
+          Process.run("rfkill", ["toggle", "wifi"]),
+          syncValues()
+        },
+      ),
     );
   }
 
