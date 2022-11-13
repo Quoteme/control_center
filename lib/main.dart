@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 const primaryColor = Colors.green;
 const secondaryColor = Colors.white38;
 const primaryBackgroundColor = Colors.black54;
-const secondaryBackgroundColor = Colors.black54;
+const secondaryBackgroundColor = Colors.black87;
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        colorScheme: ColorScheme.dark(
+        colorScheme: const ColorScheme.dark(
           primary: primaryColor,
           secondary: primaryBackgroundColor,
           primaryVariant: secondaryColor,
@@ -39,10 +39,20 @@ class MyApp extends StatelessWidget {
           fillColor: primaryBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
-        dividerTheme: DividerThemeData(
+        dividerTheme: const DividerThemeData(
           color: secondaryColor,
           thickness: 1,
           space: 40,
+        ),
+        appBarTheme: const AppBarTheme(
+          color: primaryBackgroundColor,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: secondaryColor),
+          titleTextStyle: const TextStyle(
+            color: secondaryColor,
+            fontFamily: 'Roboto mono',
+            fontSize: 20,
+          ),
         ),
         iconTheme: const IconThemeData(color: primaryColor),
         backgroundColor: secondaryBackgroundColor,
