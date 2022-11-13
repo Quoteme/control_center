@@ -300,14 +300,20 @@ class _AutorotateState extends State<Autorotate> {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      IconButton(
-        icon: Icon(_icon, color: _autorotate ? Colors.green : Colors.red),
-        tooltip: "Autorotate",
-        onPressed: () => {
-          Process.run("toggleautoscreenrotation.sh", []),
-          setState(() => _autorotate = !_autorotate),
-          syncValues()
-        },
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.black26,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: IconButton(
+          icon: Icon(_icon, color: _autorotate ? Colors.green : Colors.red),
+          tooltip: "Autorotate",
+          onPressed: () => {
+            Process.run("toggleautoscreenrotation.sh", []),
+            setState(() => _autorotate = !_autorotate),
+            syncValues()
+          },
+        ),
       ),
       Text("Autorotate: ${_autorotate ? "On" : "Off"}")
     ]);
@@ -347,12 +353,17 @@ class _InputDisableState extends State<InputDisable> {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      IconButton(
-        icon: Icon(Icons.keyboard,
-            color: _inputDisabled ? Colors.green : Colors.red),
-        tooltip: "InputDisable",
-        onPressed: () =>
-            {Process.run("toggledisableinput.sh", []), syncValues()},
+      Container(
+        decoration: BoxDecoration(
+            color: Colors.black26,
+            borderRadius: BorderRadius.circular(10)),
+        child: IconButton(
+          icon: Icon(Icons.keyboard,
+              color: _inputDisabled ? Colors.green : Colors.red),
+          tooltip: "InputDisable",
+          onPressed: () =>
+              {Process.run("toggledisableinput.sh", []), syncValues()},
+        ),
       ),
       Text("Input: ${_inputDisabled ? "always-on" : "auto disable"}")
     ]);
@@ -389,16 +400,22 @@ class _BluetoothWidtget extends State<BluetoothWidtget> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        icon: Icon(
-            _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
-            color: _bluetoothDisabled ? Colors.red : Colors.green),
-        tooltip: "BluetoothWidtget",
-        onPressed: () => {
-          Process.run("rfkill", ["toggle", "bluetooth"]),
-          syncValues()
-        },
-      );
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.black26,
+      ),
+      child: IconButton(
+          icon: Icon(
+              _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
+              color: _bluetoothDisabled ? Colors.red : Colors.green),
+          tooltip: "BluetoothWidtget",
+          onPressed: () => {
+            Process.run("rfkill", ["toggle", "bluetooth"]),
+            syncValues()
+          },
+        ),
+    );
   }
 
   void syncValues() async {
