@@ -22,3 +22,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  fonts:
+    - family: Permanent Marker
+      fonts:
+        - asset: fonts/PermanentMarker-Regular.ttf

@@ -50,8 +50,8 @@ class MyApp extends StatelessWidget {
           iconTheme: const IconThemeData(color: secondaryColor),
           titleTextStyle: const TextStyle(
             color: secondaryColor,
-            fontFamily: 'Roboto mono',
-            fontSize: 20,
+            fontFamily: 'Permanent Marker',
+            fontSize: 30,
           ),
         ),
         iconTheme: const IconThemeData(color: primaryColor),
