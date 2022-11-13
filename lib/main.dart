@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 const primaryColor = Colors.green;
-const secondaryColor = Colors.white24;
+const secondaryColor = Colors.white38;
 const primaryBackgroundColor = Colors.black54;
 const secondaryBackgroundColor = Colors.black54;
 
@@ -25,10 +25,10 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.dark(
-          primary: Colors.green,
-          secondary: Colors.black54,
-          primaryVariant: Colors.white24,
-          secondaryVariant: Colors.black54,
+          primary: primaryColor,
+          secondary: primaryBackgroundColor,
+          primaryVariant: secondaryColor,
+          secondaryVariant: secondaryBackgroundColor,
         ),
         primarySwatch: primaryColor,
         scaffoldBackgroundColor: ColorScheme.dark().background,
@@ -140,40 +140,62 @@ class _PlayerCtl extends State<PlayerCtl> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.secondary,
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.skip_previous),
+                  onPressed: () => Process.run('playerctl', ['previous']),
+                ),
               ),
-              child: IconButton(
-                icon: const Icon(Icons.skip_previous),
-                onPressed: () => Process.run('playerctl', ['previous']),
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                child: IconButton(
+                  icon: Icon(_status != 'Paused' ? Icons.pause : Icons.play_arrow),
+                  onPressed: () => {
+                    Process.run('playerctl', ['play-pause']),
+                    _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
+                    syncValues()
+                  },
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(_status != 'Paused' ? Icons.pause : Icons.play_arrow),
-              onPressed: () => {
-                Process.run('playerctl', ['play-pause']),
-                _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
-                syncValues()
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.skip_next),
-              onPressed: () => Process.run('playerctl', ['next']),
-            ),
-            // Text(_album),
-            // Text(_status),
-          ],
-        ),
-        Text(_artist),
-        Text(_title),
-      ],
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.skip_next),
+                  onPressed: () => Process.run('playerctl', ['next']),
+                ),
+              ),
+              // Text(_album),
+              // Text(_status),
+            ],
+          ),
+          Text(_artist),
+          Text(_title),
+        ],
+      ),
     );
   }
 
