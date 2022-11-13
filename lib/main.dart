@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 const buttonActiveColor = Colors.deepPurple;
-const buttonInactiveColor = Colors.grey;
+const buttonInactiveColor = Colors.white24;
+const buttonBackgroundColor = Colors.black26;
 
 void main() {
   runApp(const MyApp());
@@ -189,12 +190,19 @@ class _VolumeSliderState extends State<VolumeSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-            onPressed: () => {
-                  Process.run("pamixer", ["--toggle-mute"]),
-                  syncValues()
-                },
-            icon: Icon(_icon)),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: buttonBackgroundColor,
+          ),
+          child: IconButton(
+            color: _muted ? buttonInactiveColor : buttonActiveColor,
+              onPressed: () => {
+                    Process.run("pamixer", ["--toggle-mute"]),
+                    syncValues()
+                  },
+              icon: Icon(_icon)),
+        ),
         Expanded(
             child: Slider(
                 value: _volume,
@@ -249,7 +257,15 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(onPressed: () => {}, icon: Icon(_brightnessIcon)),
+        Container(
+          decoration: BoxDecoration(
+            color: buttonBackgroundColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: IconButton(
+            color: buttonActiveColor,
+            onPressed: () => {}, icon: Icon(_brightnessIcon)),
+        ),
         Expanded(
             child: Slider(
                 value: _brightness,
@@ -306,7 +322,7 @@ class _AutorotateState extends State<Autorotate> {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         decoration: BoxDecoration(
-          color: Colors.black26,
+          color: buttonBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: IconButton(
@@ -358,7 +374,7 @@ class _InputDisableState extends State<InputDisable> {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         decoration: BoxDecoration(
-            color: Colors.black26,
+            color: buttonBackgroundColor,
             borderRadius: BorderRadius.circular(10)),
         child: IconButton(
           icon: Icon(Icons.keyboard,
@@ -405,7 +421,7 @@ class _BluetoothWidtget extends State<BluetoothWidtget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.black26,
+        color: buttonBackgroundColor,
       ),
       child: IconButton(
           icon: Icon(
@@ -448,7 +464,7 @@ class _WifiWidget extends State<WifiWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.black26,
+        color: buttonBackgroundColor,
       ),
       child: IconButton(
           icon: Icon(
