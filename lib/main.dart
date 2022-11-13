@@ -24,8 +24,14 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.green,
+          secondary: Colors.black54,
+          primaryVariant: Colors.white24,
+          secondaryVariant: Colors.black54,
+        ),
         primarySwatch: primaryColor,
-        scaffoldBackgroundColor: secondaryBackgroundColor,
+        scaffoldBackgroundColor: ColorScheme.dark().background,
         cardColor: primaryBackgroundColor,
         toggleButtonsTheme: ToggleButtonsThemeData(
           color: secondaryColor,
@@ -139,9 +145,15 @@ class _PlayerCtl extends State<PlayerCtl> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              icon: const Icon(Icons.skip_previous),
-              onPressed: () => Process.run('playerctl', ['previous']),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.skip_previous),
+                onPressed: () => Process.run('playerctl', ['previous']),
+              ),
             ),
             IconButton(
               icon: Icon(_status != 'Paused' ? Icons.pause : Icons.play_arrow),
