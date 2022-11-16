@@ -100,6 +100,7 @@ class MyHomePage extends StatelessWidget {
                       children: const [
                         Autorotate(),
                         InputDisable(),
+                        StatusBar(),
                         BluetoothWidtget(),
                         WifiWidget(),
                       ]),
@@ -150,12 +151,7 @@ class _PlayerCtl extends State<PlayerCtl> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Theme.of(context).colorScheme.secondary,
-      ),
+    return Card(
       child: Column(
         children: [
           Row(
@@ -460,6 +456,28 @@ class _InputDisableState extends State<InputDisable> {
         _inputDisabled = true;
       });
     }
+  }
+}
+
+class StatusBar extends StatelessWidget {
+  const StatusBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: primaryBackgroundColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Transform.scale(
+        scaleY: -1,
+        child: IconButton(
+          icon: Icon(Icons.call_to_action, color: secondaryColor),
+          tooltip: "Status Bar",
+          onPressed: () => {Process.run("xmonadctl", ["toggle-struts"])},
+        ),
+      ),
+    );
   }
 }
 
