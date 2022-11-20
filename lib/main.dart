@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-const primaryColor = Colors.green;
+const primaryColor = Colors.teal;
 const secondaryColor = Colors.white38;
 const primaryBackgroundColor = Colors.black54;
 const secondaryBackgroundColor = Colors.black87;
@@ -38,10 +38,12 @@ class MyApp extends StatelessWidget {
           selectedColor: primaryColor,
           fillColor: primaryBackgroundColor,
           borderRadius: BorderRadius.circular(10),
+          borderWidth: 3,
+          borderColor: secondaryBackgroundColor,
         ),
         dividerTheme: const DividerThemeData(
-          color: secondaryColor,
-          thickness: 1,
+          color: secondaryBackgroundColor,
+          thickness: 3,
           space: 40,
         ),
         appBarTheme: const AppBarTheme(
@@ -77,14 +79,14 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          CloseButton(
-            onPressed: () => exit(0),
-          )
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text(title),
+      //   actions: [
+      //     CloseButton(
+      //       onPressed: () => exit(0),
+      //     )
+      //   ],
+      // ),
       body: Container(
           padding: const EdgeInsets.all(30),
           child: Column(
@@ -152,55 +154,73 @@ class _PlayerCtl extends State<PlayerCtl> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.secondary,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.skip_previous),
+                    onPressed: () => Process.run('playerctl', ['previous']),
+                  ),
                 ),
-                child: IconButton(
-                  icon: const Icon(Icons.skip_previous),
-                  onPressed: () => Process.run('playerctl', ['previous']),
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                        _status != 'Paused' ? Icons.pause : Icons.play_arrow),
+                    onPressed: () => {
+                      Process.run('playerctl', ['play-pause']),
+                      _status == 'Playing'
+                          ? _status = 'Paused'
+                          : _status = 'Playing',
+                      syncValues()
+                    },
+                  ),
                 ),
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.skip_next),
+                    onPressed: () => Process.run('playerctl', ['next']),
+                  ),
+                ),
+                // Text(_album),
+                // Text(_status),
+              ],
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Text(_title),
+                      Text(_artist),
+                    ],
+                  ),
+                ],
               ),
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: IconButton(
-                  icon: Icon(_status != 'Paused' ? Icons.pause : Icons.play_arrow),
-                  onPressed: () => {
-                    Process.run('playerctl', ['play-pause']),
-                    _status == 'Playing' ? _status = 'Paused' : _status = 'Playing',
-                    syncValues()
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.skip_next),
-                  onPressed: () => Process.run('playerctl', ['next']),
-                ),
-              ),
-              // Text(_album),
-              // Text(_status),
-            ],
-          ),
-          Text(_artist),
-          Text(_title),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -474,7 +494,9 @@ class StatusBar extends StatelessWidget {
         child: IconButton(
           icon: Icon(Icons.call_to_action, color: secondaryColor),
           tooltip: "Status Bar",
-          onPressed: () => {Process.run("xmonadctl", ["toggle-struts"])},
+          onPressed: () => {
+            Process.run("xmonadctl", ["toggle-struts"])
+          },
         ),
       ),
     );
