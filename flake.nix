@@ -66,7 +66,7 @@
             version = "0.0.1";
             buildInputs = appdeps;
             src = ./.;
-            vendorHash = "sha256-voNXsFXMSRNxXKCVHEhfGrezb3LhryzP+cefIeOei0s=";
+            vendorHash = "sha256-lBF5k4Ske24M3aiRWNvOkvSEB/xbD4yhVExRv2VXLTY=";
             postInstall = ''
               cp $src/toggle_control_center.sh $out/bin
               chmod +x $out/bin/toggle_control_center.sh
