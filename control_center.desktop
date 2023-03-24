@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version = 1.5
+Type =		Application
+Name =		Control Center
+GenericName =	Control Center
+GenericName[de]=Control Center
+Comment =	XMonad Control Center
+Comment[de] =	XMonad Control Center
+Icon =		control_center_icon.png
+Categories =	Utility;Settings;
+
+Terminal =	false
+Exec =		control_center
+StartupNotify =	true

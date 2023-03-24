@@ -66,7 +66,7 @@
             version = "0.0.1";
             buildInputs = appdeps;
             src = ./.;
-            vendorHash = "sha256-lBF5k4Ske24M3aiRWNvOkvSEB/xbD4yhVExRv2VXLTY=";
+            vendorHash = "sha256-cncm/Mjtyoz9FjgnYC3Xaf57kqnkv2hZRh163a03gBI=";
             postInstall = ''
               cp $src/toggle_control_center.sh $out/bin
               chmod +x $out/bin/toggle_control_center.sh
@@ -74,6 +74,10 @@
               --prefix PATH : ${pkgs.lib.makeBinPath appdeps} \
               --prefix PATH : ${pkgs.playerctl}/bin \
               --prefix PATH : ${xmonadctl}/bin
+              mkdir -p $out/share/applications/
+              cp $src/control_center.desktop $out/share/applications/org.quoteme.ControlCenter.desktop
+              mkdir -p $out/share/icons/
+              cp $src/control_center_icon.png "$out/share/icons/control_center_icon.png"
             '';
           };
 
