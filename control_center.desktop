@@ -10,5 +10,5 @@ Icon =		control_center_icon.png
 Categories =	Utility;Settings;
 
 Terminal =	false
-Exec =		control_center
+Exec =		toggle_control_center.sh
 StartupNotify =	true
