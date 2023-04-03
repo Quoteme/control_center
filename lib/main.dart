@@ -79,14 +79,14 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(title),
-      //   actions: [
-      //     CloseButton(
-      //       onPressed: () => exit(0),
-      //     )
-      //   ],
-      // ),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          CloseButton(
+            onPressed: () => exit(0),
+          )
+        ],
+      ),
       body: Container(
           padding: const EdgeInsets.all(30),
           child: Column(
