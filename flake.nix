@@ -17,12 +17,14 @@
         pkgs = import nixpkgs { inherit system; };
         # based on
         # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3
-        xmonadctl = (pkgs.callPackage (pkgs.fetchFromGitHub {
-          owner = "quoteme";
-          repo = "xmonadctl";
-          rev = "v1.0";
-          sha256 = "1bjf3wnxsghfb64jji53m88vpin916yqlg3j0r83kz9k79vqzqxd";
-        }) {} );
+        xmonadctl = (pkgs.callPackage
+          (pkgs.fetchFromGitHub {
+            owner = "quoteme";
+            repo = "xmonadctl";
+            rev = "v1.0";
+            sha256 = "1bjf3wnxsghfb64jji53m88vpin916yqlg3j0r83kz9k79vqzqxd";
+          })
+          { });
         appdeps = with pkgs; [
           libnotify
           brightnessctl
@@ -40,7 +42,7 @@
           cmake
           dart
           dbus.dev
-          flutter
+          # flutter
           gtk3
           libdatrie
           libepoxy.dev
@@ -58,38 +60,38 @@
           # Dependencies for the flutter app
         ] ++ appdeps;
       in
-        rec {
-          defaultPackage = packages.control_center;
+      rec {
+        defaultPackage = packages.control_center;
 
-          packages.control_center = pkgs.flutter.mkFlutterApp rec {
-            pname = "control_center";
-            version = "0.0.1";
-            buildInputs = appdeps;
-            src = ./.;
-            vendorHash = "sha256-4FlUT4CVazYVA66sDKPk3gC+OltQMQA0f3wEN97odmE=";
-            postInstall = ''
-              cp $src/toggle_control_center.sh $out/bin
-              chmod +x $out/bin/toggle_control_center.sh
-              wrapProgram $out/bin/toggle_control_center.sh \
-              --prefix PATH : ${pkgs.lib.makeBinPath appdeps} \
-              --prefix PATH : ${pkgs.playerctl}/bin \
-              --prefix PATH : ${xmonadctl}/bin
-              mkdir -p $out/share/applications/
-              cp $src/control_center.desktop $out/share/applications/org.quoteme.ControlCenter.desktop
-              mkdir -p $out/share/icons/
-              cp $src/control_center_icon.png "$out/share/icons/control_center_icon.png"
-            '';
-          };
+        packages.control_center = pkgs.flutter.mkFlutterApp rec {
+          pname = "control_center";
+          version = "0.0.1";
+          buildInputs = appdeps;
+          src = ./.;
+          vendorHash = "sha256-4FlUT4CVazYVA66sDKPk3gC+OltQMQA0f3wEN97odmE=";
+          postInstall = ''
+            cp $src/toggle_control_center.sh $out/bin
+            chmod +x $out/bin/toggle_control_center.sh
+            wrapProgram $out/bin/toggle_control_center.sh \
+            --prefix PATH : ${pkgs.lib.makeBinPath appdeps} \
+            --prefix PATH : ${pkgs.playerctl}/bin \
+            --prefix PATH : ${xmonadctl}/bin
+            mkdir -p $out/share/applications/
+            cp $src/control_center.desktop $out/share/applications/org.quoteme.ControlCenter.desktop
+            mkdir -p $out/share/icons/
+            cp $src/control_center_icon.png "$out/share/icons/control_center_icon.png"
+          '';
+        };
 
-          devShells.default = pkgs.mkShell {
-            buildInputs = dependencies;
-            # based on
-            # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3#:~:text=The%20problem%20was%20that%20flutter%20does%20not%20use%20NixOS%20way%20to%20look%20for%20libraries%20during%20linking%20(most%20likely%20a%20bug%20in%20the%20package)%2C%20so%20LD_LIBRARY_PATH%2C%20which%20is%20unused%20on%20NixOS%20must%20be%20set
-            shellHook = ''
-              export LD_LIBRARY_PATH=${pkgs.libepoxy}/lib:$LD_LIBRARY_PATH
-              export PUB_CACHE="./.cache/pub_cache"
-            '';
-          };
-        }
-      );
+        devShells.default = pkgs.mkShell {
+          buildInputs = dependencies;
+          # based on
+          # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3#:~:text=The%20problem%20was%20that%20flutter%20does%20not%20use%20NixOS%20way%20to%20look%20for%20libraries%20during%20linking%20(most%20likely%20a%20bug%20in%20the%20package)%2C%20so%20LD_LIBRARY_PATH%2C%20which%20is%20unused%20on%20NixOS%20must%20be%20set
+          shellHook = ''
+            export LD_LIBRARY_PATH=${pkgs.libepoxy}/lib:$LD_LIBRARY_PATH
+            export PUB_CACHE="./.cache/pub_cache"
+          '';
+        };
+      }
+    );
 }

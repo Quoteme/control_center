@@ -9,6 +9,6 @@ Comment[de] =	XMonad Control Center
 Icon =		control_center_icon.png
 Categories =	Utility;Settings;
 
-Terminal =	false
+Terminal =	true
 Exec =		toggle_control_center.sh
 StartupNotify =	true
