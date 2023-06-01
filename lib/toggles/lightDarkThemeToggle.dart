@@ -12,7 +12,7 @@ class LightDartThemeToggle extends StatefulWidget {
 }
 
 class _LightDartThemeToggleState extends State<LightDartThemeToggle> {
-  late bool _is_light_theme;
+  bool _is_light_theme = false;
 
   @override
   void initState() {
