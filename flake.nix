@@ -63,12 +63,13 @@
       rec {
         defaultPackage = packages.control_center;
 
-        packages.control_center = pkgs.flutter.mkFlutterApp rec {
+        packages.control_center = pkgs.flutter37.buildFlutterApplication rec {
           pname = "control_center";
           version = "0.0.1";
           buildInputs = appdeps;
           src = ./.;
-          vendorHash = "sha256-8id6F9OqDa9+Zfu95pvajgAE0PGgTjSMX07LAcaasRk=";
+          autoDepsList = true;
+          vendorHash = "sha256-Ma1yUOOlJBnulOf3m4Yu1SFNUzN47nWI84+QbaJHw9w=";
           postInstall = ''
             cp $src/toggle_control_center.sh $out/bin
             chmod +x $out/bin/toggle_control_center.sh
