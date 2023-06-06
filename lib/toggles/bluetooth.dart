@@ -26,9 +26,8 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
       ),
       child: IconButton(
         isSelected: _bluetoothDisabled,
-        icon: Icon(
-            _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth
-            ),
+        icon: Icon(Icons.bluetooth),
+        selectedIcon: Icon(Icons.bluetooth_disabled),
         tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
         onPressed: () => {
           Process.run("rfkill", ["toggle", "bluetooth"]),
@@ -40,7 +39,6 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
 
   void syncValues() async {
     ProcessResult result = await Process.run("rfkill", ["list", "bluetooth"]);
-    print(result.stdout);
     setState(() {
       _bluetoothDisabled = result.stdout.contains("Soft blocked: yes");
     });
