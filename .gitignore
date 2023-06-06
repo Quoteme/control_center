@@ -48,3 +48,5 @@ app.*.map.json
 # NIXOS
 result
 .direnv
+
+.flutter-plugins-dependencies

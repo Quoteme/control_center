@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'homepage.dart';
@@ -34,22 +35,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: _themeMode,
-        builder: (context, snapshot) => MaterialApp(
-              title: 'Control Center',
-              theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-                splashColor: Colors.pink,
+        builder: (context, snapshot) => RawKeyboardListener(
+              focusNode: FocusNode(),
+              onKey: (event) {
+                if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+                  exit(0);
+                }
+              },
+              child: MaterialApp(
+                title: 'Control Center',
+                theme: ThemeData(
+                  useMaterial3: true,
+                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+                  splashColor: Colors.pink,
+                ),
+                darkTheme: ThemeData(
+                  useMaterial3: true,
+                  colorScheme: ColorScheme.fromSeed(
+                      seedColor: Colors.blue, brightness: Brightness.dark),
+                ),
+                themeMode: snapshot.data as ThemeMode?,
+                home: const MyHomePage(title: 'Control Center'),
               ),
-              darkTheme: ThemeData(
-                useMaterial3: true,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.blue,
-                  brightness: Brightness.dark
-                  ),
-              ),
-              themeMode: snapshot.data as ThemeMode?,
-              home: const MyHomePage(title: 'Control Center'),
             ));
   }
 }
