@@ -44,9 +44,9 @@ class _LightDartThemeToggleState extends State<LightDartThemeToggle> {
         scaleY: -1,
         child: IconButton(
           isSelected: _is_light_theme,
-          icon: const Icon(Icons.dark_mode),
-          selectedIcon: const Icon(Icons.light_mode),
-          tooltip: "Status Bar",
+          icon: const Icon(Icons.dark_mode_outlined),
+          selectedIcon: const Icon(Icons.light_mode_outlined),
+          tooltip: "Toggle Light/Dark Theme",
           onPressed: toggle,
         ),
       ),

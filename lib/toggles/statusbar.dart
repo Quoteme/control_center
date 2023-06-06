@@ -16,7 +16,7 @@ class StatusBar extends StatelessWidget {
       child: Transform.scale(
         scaleY: -1,
         child: IconButton(
-          icon: Icon(Icons.call_to_action),
+          icon: Icon(Icons.call_to_action_outlined),
           tooltip: "Status Bar",
           onPressed: () => {
             Process.run("xmonadctl", ["toggle-struts"])
