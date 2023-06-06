@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:control_center/logic/systemtheme.dart';
 import 'package:flutter/material.dart';
+import 'package:system_theme/system_theme.dart';
 
 import '../main.dart';
 
@@ -22,32 +24,13 @@ class _LightDartThemeToggleState extends State<LightDartThemeToggle> {
 
   Future<void> syncValues() async {
     // get the output of `gsettings get org.gnome.desktop.interface color-scheme`
-    String output = (await Process.run("gsettings",
-            ["get", "org.gnome.desktop.interface", "color-scheme"]))
-        .stdout
-        .toString();
-    print(output);
     setState(() {
-      _is_light_theme = output.contains("light");
+      _is_light_theme = !SystemTheme.isDarkMode;
     });
   }
 
   Future<void> toggle() async {
-    if (_is_light_theme) {
-      await Process.run("gsettings", [
-        "set",
-        "org.gnome.desktop.interface",
-        "color-scheme",
-        "prefer-dark"
-      ]);
-    } else {
-      await Process.run("gsettings", [
-        "set",
-        "org.gnome.desktop.interface",
-        "color-scheme",
-        "prefer-light"
-      ]);
-    }
+    await LinuxSystemTheme.toggle();
     await syncValues();
   }
 
@@ -55,15 +38,14 @@ class _LightDartThemeToggleState extends State<LightDartThemeToggle> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: primaryBackgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Transform.scale(
         scaleY: -1,
         child: IconButton(
-          icon: _is_light_theme
-              ? const Icon(Icons.light_mode, color: secondaryColor)
-              : const Icon(Icons.dark_mode, color: secondaryColor),
+          isSelected: _is_light_theme,
+          icon: const Icon(Icons.dark_mode),
+          selectedIcon: const Icon(Icons.light_mode),
           tooltip: "Status Bar",
           onPressed: toggle,
         ),

@@ -28,10 +28,9 @@ class _VolumeSliderState extends State<VolumeSlider> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: primaryBackgroundColor,
           ),
           child: IconButton(
-              color: _muted ? secondaryColor : primaryColor,
+              isSelected: _muted,
               onPressed: () => {
                     Process.run("pamixer", ["--toggle-mute"]),
                     syncValues()

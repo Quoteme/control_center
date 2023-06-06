@@ -24,12 +24,10 @@ class _InputDisableState extends State<InputDisable> {
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
-        decoration: BoxDecoration(
-            color: primaryBackgroundColor,
-            borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration( borderRadius: BorderRadius.circular(10)),
         child: IconButton(
-          icon: Icon(Icons.keyboard,
-              color: _inputDisabled ? primaryColor : secondaryColor),
+          isSelected: _inputDisabled,
+          icon: Icon(Icons.keyboard),
           tooltip: "Input: ${_inputDisabled ? "always-on" : "auto disable"}",
           onPressed: () =>
               {Process.run("toggledisableinput.sh", []), syncValues()},

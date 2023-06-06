@@ -26,11 +26,9 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: primaryBackgroundColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: IconButton(
-              color: primaryColor,
               onPressed: () => {},
               icon: Icon(_brightnessIcon)),
         ),

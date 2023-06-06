@@ -23,11 +23,10 @@ class _WifiWidget extends State<WifiWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: primaryBackgroundColor,
       ),
       child: IconButton(
-        icon: Icon(_wifiDisabled ? Icons.wifi_off : Icons.wifi,
-            color: _wifiDisabled ? secondaryColor : primaryColor),
+        isSelected: _wifiDisabled,
+        icon: Icon(_wifiDisabled ? Icons.wifi_off : Icons.wifi),
         tooltip: "Wifi: ${_wifiDisabled ? "Off" : "On"}",
         onPressed: () => {
           Process.run("rfkill", ["toggle", "wifi"]),

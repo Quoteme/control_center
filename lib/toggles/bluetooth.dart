@@ -23,12 +23,12 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: primaryBackgroundColor,
       ),
       child: IconButton(
+        isSelected: _bluetoothDisabled,
         icon: Icon(
-            _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth,
-            color: _bluetoothDisabled ? secondaryColor : primaryColor),
+            _bluetoothDisabled ? Icons.bluetooth_disabled : Icons.bluetooth
+            ),
         tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
         onPressed: () => {
           Process.run("rfkill", ["toggle", "bluetooth"]),

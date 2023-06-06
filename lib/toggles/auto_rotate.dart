@@ -12,7 +12,6 @@ class Autorotate extends StatefulWidget {
 }
 
 class _AutorotateState extends State<Autorotate> {
-  IconData _icon = Icons.screen_rotation;
   bool _autorotate = true;
 
   @override
@@ -26,11 +25,12 @@ class _AutorotateState extends State<Autorotate> {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         decoration: BoxDecoration(
-          color: primaryBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: IconButton(
-          icon: Icon(_icon, color: _autorotate ? primaryColor : secondaryColor),
+          isSelected: _autorotate,
+          icon: Icon(Icons.screen_lock_rotation),
+          selectedIcon: Icon(Icons.screen_rotation),
           tooltip: "Autorotate: ${_autorotate ? "On" : "Off"}",
           onPressed: () => {
             Process.run("toggleautoscreenrotation.sh", []),
@@ -42,18 +42,17 @@ class _AutorotateState extends State<Autorotate> {
     ]);
   }
 
+  /// Synchronize the values of `_autorotate` with the system state
   void syncValues() async {
     String home = Platform.environment['HOME'] ?? "";
     String contents = File('$home/.config/autoscreenrotate').readAsStringSync();
     if (contents.trim() == "true") {
       setState(() {
         _autorotate = false;
-        _icon = Icons.screen_rotation;
       });
     } else {
       setState(() {
         _autorotate = true;
-        _icon = Icons.screen_lock_rotation;
       });
     }
   }

@@ -35,7 +35,6 @@ class _PlayerCtl extends State<PlayerCtl> {
                   margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.secondary,
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.skip_previous),
@@ -46,7 +45,6 @@ class _PlayerCtl extends State<PlayerCtl> {
                   margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.secondary,
                   ),
                   child: IconButton(
                     icon: Icon(
@@ -64,7 +62,6 @@ class _PlayerCtl extends State<PlayerCtl> {
                   margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.secondary,
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.skip_next),
