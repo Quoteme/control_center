@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:system_theme/system_theme.dart';
 
+import 'homepage.dart';
 import 'toggles/lightDarkThemeToggle.dart';
 import 'package:flutter/material.dart';
 
@@ -52,70 +53,3 @@ class MyApp extends StatelessWidget {
             ));
   }
 }
-
-// Home Pages
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          CloseButton(
-            onPressed: () => exit(0),
-          )
-        ],
-      ),
-      body: Container(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              const VolumeSlider(),
-              const BrightnessSlider(),
-              const Divider(),
-              Column(
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        Autorotate(),
-                        //InputDisable(),
-                        LightDartThemeToggle(),
-                        StatusBar(),
-                        BluetoothWidget(),
-                        WifiWidget(),
-                      ]),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        WindowLayout(),
-                        WindowNavigation(),
-                        PowerProfile()
-                        // Wifi(),
-                        // Bluetooth(),
-                        // AirplaneMode()
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              const Divider(),
-              const PlayerCtl(),
-            ],
-          )),
-    );
-  }
-}
-
-// Performance mode toggle buttons
-// airplane mode
-// wifi ...
-// wie android
