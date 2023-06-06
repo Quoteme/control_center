@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:control_center/bluetooth_menu/bluetooth_menu.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -20,19 +21,30 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: IconButton(
-        isSelected: _bluetoothDisabled,
-        icon: Icon(Icons.bluetooth),
-        selectedIcon: Icon(Icons.bluetooth_disabled),
-        tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
-        onPressed: () => {
-          Process.run("rfkill", ["toggle", "bluetooth"]),
-          syncValues()
-        },
+    return InkWell(
+      onLongPress: () {
+        // Navigate to the Bluetooth-Settings
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BluetoothMenu()
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: IconButton(
+          isSelected: _bluetoothDisabled,
+          icon: Icon(Icons.bluetooth),
+          selectedIcon: Icon(Icons.bluetooth_disabled),
+          tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
+          onPressed: () => {
+            Process.run("rfkill", ["toggle", "bluetooth"]),
+            syncValues()
+          },
+        ),
       ),
     );
   }

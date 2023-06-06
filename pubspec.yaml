@@ -9,6 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   system_theme: ^2.2.0
+  bluez: ^0.8.1
 
 dev_dependencies:
   build_runner: ^2.2.0
