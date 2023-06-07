@@ -22,6 +22,7 @@ class MediaControl extends StatelessWidget {
               children: [
                 _buttons(),
                 _info(),
+                _timeline(),
               ],
             )
           ],
@@ -54,6 +55,47 @@ class MediaControl extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _timeline() {
+    return StreamBuilder(
+      stream: player.length,
+      builder: (BuildContext context, AsyncSnapshot<Duration?> snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          Duration length = snapshot.data!;
+          return StreamBuilder(
+            stream: player.position,
+            builder: (BuildContext context, AsyncSnapshot<Duration?> snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
+                Duration position = snapshot.data!;
+                return Slider(
+                  value: position.inSeconds.toDouble(),
+                  min: 0,
+                  max: length.inSeconds.toDouble(),
+                  onChanged: (value) => Process.run(
+                      'playerctl', ['-p', player.player, 'position', value.toString()]),
+                );
+              } else {
+                return const Slider(
+                  value: 0,
+                  min: 0,
+                  max: 100,
+                  onChanged: null,
+                );
+              }
+            },
+          );
+        } else {
+          // show a disabled slider
+          return const Slider(
+            value: 0,
+            min: 0,
+            max: 100,
+            onChanged: null,
+          );
+        }
+      },
     );
   }
 

@@ -33,6 +33,10 @@ class PlayerCTL {
     }
   }
 
+  Stream<Duration?> get length => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _length());
+  Stream<Duration?> get position => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _position());
   Stream<String?> get artist => Stream.periodic(const Duration(seconds: 1))
       .asyncMap((event) async => await _metadata('artist'));
   Stream<String?> get album => Stream.periodic(const Duration(seconds: 1))
@@ -72,6 +76,25 @@ class PlayerCTL {
   Future<String> _status() async =>
       await Process.run('playerctl', ['-p', player, 'status'])
           .then((value) => value.stdout.toString().trim());
+
+  Future<Duration?> _position() async {
+    ProcessResult result =
+        await Process.run('playerctl', ['-p', player, 'position']);
+    var parsed = double.tryParse(result.stdout.toString().trim());
+    if (parsed == null) return null;
+    // first convert seconds (with 6 decimal places) to microseconds
+    int microseconds = (parsed * 1000000).toInt();
+    // now convert microseconds to Duration
+    return Duration(microseconds: microseconds);
+  }
+
+  Future<Duration?> _length() async {
+    ProcessResult result =
+        await Process.run('playerctl', ['-p', player, 'metadata', 'mpris:length']);
+    var parsed = int.tryParse(result.stdout.toString().trim());
+    if (parsed == null) return null;
+    return Duration(microseconds: parsed);
+  }
 
   Future<String?> _metadata(String attribute) async {
     ProcessResult result =
