@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:control_center/sliders/brightness_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:control_center/toggles/lightDarkThemeToggle.dart';
-import 'mediaControl/playerCtl.dart';
+import 'logic/playerctl.dart';
+import 'mediaControl/mediacontrol.dart';
 import 'toggles/statusbar.dart';
 import 'selections/power_profiles.dart';
 import 'selections/window_layout.dart';
@@ -58,7 +59,21 @@ class MyHomePage extends StatelessWidget {
                 ],
               ),
               const Divider(),
-              const PlayerCtl(),
+              StreamBuilder(
+                stream: PlayerCTL.allPlayers,
+                builder: (context, AsyncSnapshot<List<PlayerCTL>> snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: snapshot.data!
+                          .map((e) => MediaControl(player: e))
+                          .toList(),
+                    );
+                  } else {
+                    return const Text('No players found');
+                  }
+                },
+              )
+              // MediaControl(),
             ],
           )),
     );

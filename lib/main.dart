@@ -7,7 +7,7 @@ import 'homepage.dart';
 import 'toggles/lightDarkThemeToggle.dart';
 import 'package:flutter/material.dart';
 
-import 'mediaControl/playerCtl.dart';
+import 'mediaControl/mediacontrol.dart';
 import 'toggles/statusbar.dart';
 import 'selections/power_profiles.dart';
 import 'selections/window_layout.dart';

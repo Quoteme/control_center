@@ -50,3 +50,4 @@ result
 .direnv
 
 .flutter-plugins-dependencies
+.dart_tool/package_config_subset
