@@ -4,17 +4,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:control_center/logic/playerctl.dart';
 import 'package:flutter/material.dart';
 
-class MediaControl extends StatefulWidget {
+class MediaControl extends StatelessWidget {
   late PlayerCTL player;
 
   /// Constructor that takes a [PlayerCTL] object to control the player as a named parameter.
   MediaControl({Key? key, required this.player}) : super(key: key);
 
-  @override
-  State<MediaControl> createState() => _MediaControlState();
-}
-
-class _MediaControlState extends State<MediaControl> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -22,29 +17,71 @@ class _MediaControlState extends State<MediaControl> {
         padding: const EdgeInsets.all(10),
         child: Row(
           children: [
-            _info(),
-            _buttons(),
+            _icon(),
+            Column(
+              children: [
+                _buttons(),
+                _info(),
+              ],
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _info() {
+  Widget _icon() {
     return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              Text("lulul")
-              // AutoSizeText(_artist, maxLines: 1),
-              // AutoSizeText(_title, maxLines: 2),
-            ],
-          ),
-        ],
+      padding: const EdgeInsets.all(10),
+      child: SizedBox(
+        height: 100,
+        width: 100,
+        child: StreamBuilder(
+          stream: player.artUrl,
+          builder: (context, snapshot) {
+            if (snapshot.hasData &&
+                snapshot.data != null &&
+                snapshot.data != "") {
+              // show the album art
+              // the file path is in snapshot.data in the form of file:///path/to/file
+              return Image.file(
+                File(snapshot.data.toString().substring(7)),
+                fit: BoxFit.fill,
+              );
+            } else {
+              return const Icon(Icons.music_note, size: 100);
+            }
+          },
+        ),
       ),
+    );
+  }
+
+  Widget _info() {
+    return Column(
+      children: [
+        // StreamBuilder(
+        //   stream: player.artist,
+        //   builder: (context, snapshot) => AutoSizeText(
+        //     snapshot.hasData ? snapshot.data.toString() : '',
+        //     // style: const TextStyle(fontSize: 20),
+        //     overflow: TextOverflow.ellipsis,
+        //     maxLines: 1,
+        //   ),
+        // ),
+        SizedBox(
+          width: 300,
+          child: StreamBuilder(
+            stream: player.title,
+            builder: (context, snapshot) => Text(
+              snapshot.hasData ? snapshot.data.toString() : '',
+              // style: const TextStyle(fontSize: 20),
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -61,15 +98,22 @@ class _MediaControlState extends State<MediaControl> {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
-          child: IconButton(
-            icon: Icon(Icons.pause // : Icons.play_arrow
-                ),
-            onPressed: () => {
-              Process.run('playerctl', ['play-pause']),
-              // _status == 'Playing'
-              //     ? _status = 'Paused'
-              //     : _status = 'Playing',
-              // syncValues()
+          child: StreamBuilder(
+            stream: player.status,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data == 'Playing') {
+                  return IconButton(
+                      icon: const Icon(Icons.pause),
+                      onPressed: () => player.playPause());
+                } else {
+                  return IconButton(
+                      icon: const Icon(Icons.play_arrow),
+                      onPressed: () => player.playPause());
+                }
+              } else {
+                return const Icon(Icons.play_arrow);
+              }
             },
           ),
         ),

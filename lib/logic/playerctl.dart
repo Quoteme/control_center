@@ -33,30 +33,45 @@ class PlayerCTL {
     }
   }
 
-
-  Future<String?> get artist async => await _metadata('artist');
-  Future<String?> get album async => await _metadata('album');
-  Future<String?> get title async => await _metadata('title');
-  Future<String?> get trackid async => await _metadata('trackid');
-  Future<String?> get artUrl async => await _metadata('artUrl');
+  Stream<String?> get artist => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _metadata('artist'));
+  Stream<String?> get album => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _metadata('album'));
+  Stream<String?> get title => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _metadata('title'));
+  Stream<String?> get trackid => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _metadata('trackid'));
+  Stream<String?> get artUrl => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _metadata('mpris:artUrl'));
 
   Future<void> play() async =>
       await Process.run('playerctl', ['-p', player, 'play']);
+
   Future<void> pause() async =>
       await Process.run('playerctl', ['-p', player, 'pause']);
+
   Future<void> playPause() async =>
       await Process.run('playerctl', ['-p', player, 'play-pause']);
+
   Future<void> stop() async =>
       await Process.run('playerctl', ['-p', player, 'stop']);
+
   Future<void> next() async =>
       await Process.run('playerctl', ['-p', player, 'next']);
+
   Future<void> previous() async =>
       await Process.run('playerctl', ['-p', player, 'previous']);
-  Future<String> status() async =>
+
+  Stream<String> get status => Stream.periodic(const Duration(seconds: 1))
+      .asyncMap((event) async => await _status());
+
+  Future<bool> isPlaying() async => await _status() == 'Playing';
+
+  Future<bool> isPaused() async => await _status() == 'Paused';
+
+  Future<String> _status() async =>
       await Process.run('playerctl', ['-p', player, 'status'])
           .then((value) => value.stdout.toString().trim());
-  Future<bool> isPlaying () async => await status() == 'Playing';
-  Future<bool> isPaused () async => await status() == 'Paused';
 
   Future<String?> _metadata(String attribute) async {
     ProcessResult result =
