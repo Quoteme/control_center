@@ -31,21 +31,15 @@ class _PlayerCtl extends State<PlayerCtl> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
                     icon: const Icon(Icons.skip_previous),
                     onPressed: () => Process.run('playerctl', ['previous']),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
                     icon: Icon(
                         _status != 'Paused' ? Icons.pause : Icons.play_arrow),
@@ -58,11 +52,8 @@ class _PlayerCtl extends State<PlayerCtl> {
                     },
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
                     icon: const Icon(Icons.skip_next),
                     onPressed: () => Process.run('playerctl', ['next']),
