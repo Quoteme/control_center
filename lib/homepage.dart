@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:control_center/sliders/brightness_slider.dart';
+import 'package:control_center/toggles/tabletmode.dart';
 import 'package:flutter/material.dart';
 import 'package:control_center/toggles/lightDarkThemeToggle.dart';
 import 'package:touch_mouse_behavior/touch_mouse_behavior.dart';
@@ -42,6 +43,7 @@ class MyHomePage extends StatelessWidget {
                             //InputDisable(),
                             LightDartThemeToggle(),
                             StatusBar(),
+                            TabletMode(),
                             BluetoothWidget(),
                             WifiWidget(),
                           ]),
