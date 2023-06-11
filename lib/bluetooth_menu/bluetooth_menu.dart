@@ -47,15 +47,33 @@ class _BluetoothMenuState extends State<BluetoothMenu> {
       appBar: AppBar(
         title: const Text("Bluetooth Menu"),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.power_settings_new_outlined),
-            onPressed: () async {
-              // disable bluetooth
-              await _client.close();
-              await Process.run("rfkill", ["toggle", "bluetooth"]);
-              setState(() {
-                _devices = [];
-              });
+          StreamBuilder(
+            stream: Stream.periodic(
+              const Duration(seconds: 1),
+              (computationCount) => Process.runSync(
+                "rfkill",
+                ["list", "bluetooth"],
+              ).stdout.contains("Soft blocked: no"),
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return IconButton(
+                  isSelected: snapshot.data as bool,
+                  icon: const Icon(Icons.bluetooth_disabled),
+                  selectedIcon: const Icon(Icons.bluetooth),
+                  tooltip: "Bluetooth: ${snapshot.data as bool ? "Off" : "On"}",
+                  onPressed: () async {
+                    // disable bluetooth
+                    await _client.close();
+                    await Process.run("rfkill", ["toggle", "bluetooth"]);
+                    setState(() {
+                      _devices = [];
+                    });
+                  },
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
             },
           ),
         ],

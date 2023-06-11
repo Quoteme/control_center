@@ -13,7 +13,7 @@ class BluetoothWidget extends StatefulWidget {
 }
 
 class _BluetoothWidtget extends State<BluetoothWidget> {
-  bool _bluetoothDisabled = true;
+  bool _bluetoothEnabled = true;
 
   _BluetoothWidtget() {
     syncValues();
@@ -27,7 +27,7 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BluetoothMenu()
+            builder: (context) => const BluetoothMenu()
           ),
         );
       },
@@ -36,10 +36,10 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: IconButton(
-          isSelected: _bluetoothDisabled,
-          icon: Icon(Icons.bluetooth),
-          selectedIcon: Icon(Icons.bluetooth_disabled),
-          tooltip: "Bluetooth: ${_bluetoothDisabled ? "Off" : "On"}",
+          isSelected: _bluetoothEnabled,
+          icon: const Icon(Icons.bluetooth_disabled),
+          selectedIcon: const Icon(Icons.bluetooth),
+          tooltip: "Bluetooth: ${_bluetoothEnabled ? "Off" : "On"}",
           onPressed: () => {
             Process.run("rfkill", ["toggle", "bluetooth"]),
             syncValues()
@@ -52,7 +52,7 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
   void syncValues() async {
     ProcessResult result = await Process.run("rfkill", ["list", "bluetooth"]);
     setState(() {
-      _bluetoothDisabled = result.stdout.contains("Soft blocked: yes");
+      _bluetoothEnabled = result.stdout.contains("Soft blocked: no");
     });
   }
 }
