@@ -21,30 +21,21 @@ class _BluetoothWidtget extends State<BluetoothWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onLongPress: () {
-        // Navigate to the Bluetooth-Settings
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const BluetoothMenu()
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: IconButton(
-          isSelected: _bluetoothEnabled,
-          icon: const Icon(Icons.bluetooth_disabled),
-          selectedIcon: const Icon(Icons.bluetooth),
-          tooltip: "Bluetooth: ${_bluetoothEnabled ? "Off" : "On"}",
-          onPressed: () => {
-            Process.run("rfkill", ["toggle", "bluetooth"]),
-            syncValues()
-          },
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: IconButton(
+        isSelected: _bluetoothEnabled,
+        icon: const Icon(Icons.bluetooth_disabled),
+        selectedIcon: const Icon(Icons.bluetooth),
+        tooltip: "Bluetooth: ${_bluetoothEnabled ? "On" : "Off"}",
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BluetoothMenu()),
+          );
+        },
       ),
     );
   }

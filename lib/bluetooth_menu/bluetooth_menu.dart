@@ -14,6 +14,13 @@ class BluetoothMenu extends StatefulWidget {
 class _BluetoothMenuState extends State<BluetoothMenu> {
   var _client = BlueZClient();
   List<BlueZDevice> _devices = [];
+  final Stream<bool?> _bluetoothState = Stream.periodic(
+    const Duration(seconds: 1),
+    (computationCount) => Process.runSync(
+      "rfkill",
+      ["list", "bluetooth"],
+    ).stdout.contains("Soft blocked: no"),
+  );
 
   @override
   void initState() {
@@ -48,29 +55,37 @@ class _BluetoothMenuState extends State<BluetoothMenu> {
         title: const Text("Bluetooth Menu"),
         actions: [
           StreamBuilder(
-            stream: Stream.periodic(
-              const Duration(seconds: 1),
-              (computationCount) => Process.runSync(
-                "rfkill",
-                ["list", "bluetooth"],
-              ).stdout.contains("Soft blocked: no"),
-            ),
+            stream: _bluetoothState,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return IconButton(
-                  isSelected: snapshot.data as bool,
-                  icon: const Icon(Icons.bluetooth_disabled),
-                  selectedIcon: const Icon(Icons.bluetooth),
-                  tooltip: "Bluetooth: ${snapshot.data as bool ? "Off" : "On"}",
-                  onPressed: () async {
-                    // disable bluetooth
-                    await _client.close();
-                    await Process.run("rfkill", ["toggle", "bluetooth"]);
-                    setState(() {
-                      _devices = [];
-                    });
-                  },
+                return Switch(
+                  value: snapshot.data as bool,
+                  onChanged: (value) async {
+                    if (value) {
+                      await Process.run("rfkill", ["unblock", "bluetooth"]);
+                    } else {
+                      await Process.run("rfkill", ["block", "bluetooth"]);
+                    }
+                  }
                 );
+                // return Card(
+                //   elevation: 10,
+                //   child: IconButton(
+                //     isSelected: snapshot.data as bool,
+                //     icon: const Icon(Icons.bluetooth_disabled),
+                //     selectedIcon: const Icon(Icons.bluetooth),
+                //     tooltip: "Bluetooth: ${snapshot.data as bool ? "On" : "Off"}",
+                //     color: snapshot.data as bool ? Colors.blue : Colors.grey,
+                //     onPressed: () async {
+                //       // disable bluetooth
+                //       await _client.close();
+                //       await Process.run("rfkill", ["toggle", "bluetooth"]);
+                //       setState(() {
+                //         _devices = [];
+                //       });
+                //     },
+                //   ),
+                // );
               } else {
                 return const SizedBox.shrink();
               }

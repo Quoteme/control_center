@@ -25,7 +25,7 @@ class _WifiWidget extends State<WifiWidget> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: IconButton(
-        isSelected: _wifiDisabled,
+        isSelected: !_wifiDisabled,
         icon: Icon(_wifiDisabled ? Icons.wifi_off : Icons.wifi),
         tooltip: "Wifi: ${_wifiDisabled ? "Off" : "On"}",
         onPressed: () => {

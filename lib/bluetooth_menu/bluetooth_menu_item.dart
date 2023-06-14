@@ -20,8 +20,8 @@ class _BluetoothMenuItemState extends State<BluetoothMenuItem> {
         title: Text(widget.device!.name),
         subtitle: Text(widget.device!.address),
         trailing: IconButton(
-          icon: Icon(Icons.bluetooth),
-          selectedIcon: Icon(Icons.bluetooth_disabled),
+          icon: Icon(Icons.remove_circle, color: Colors.red),
+          selectedIcon: Icon(Icons.add_circle, color: Colors.green),
           isSelected: widget.device!.connected,
           onPressed: () {
             if (widget.device!.connected) {
