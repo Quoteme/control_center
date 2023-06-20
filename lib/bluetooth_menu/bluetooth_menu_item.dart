@@ -10,6 +10,21 @@ class BluetoothMenuItem extends StatefulWidget {
 }
 
 class _BluetoothMenuItemState extends State<BluetoothMenuItem> {
+
+  get _connectionButton => IconButton(
+        icon: Icon(Icons.add_circle, color: Colors.green),
+        selectedIcon: Icon(Icons.remove_circle, color: Colors.red),
+        tooltip: widget.device!.connected ? "Disconnect" : "Connect",
+        isSelected: widget.device!.connected,
+        onPressed: () {
+          if (widget.device!.connected) {
+            widget.device!.disconnect();
+          } else {
+            widget.device!.connect();
+          }
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     if (widget.device == null) {
@@ -19,18 +34,7 @@ class _BluetoothMenuItemState extends State<BluetoothMenuItem> {
         leading: Icon(getIcon()),
         title: Text(widget.device!.name),
         subtitle: Text(widget.device!.address),
-        trailing: IconButton(
-          icon: Icon(Icons.remove_circle, color: Colors.red),
-          selectedIcon: Icon(Icons.add_circle, color: Colors.green),
-          isSelected: widget.device!.connected,
-          onPressed: () {
-            if (widget.device!.connected) {
-              widget.device!.disconnect();
-            } else {
-              widget.device!.connect();
-            }
-          },
-        ),
+        trailing: _connectionButton,
       );
     }
   }
@@ -39,7 +43,7 @@ class _BluetoothMenuItemState extends State<BluetoothMenuItem> {
     if (widget.device == null) {
       return Icons.bluetooth_disabled;
     }
-    switch(widget.device!.icon) {
+    switch (widget.device!.icon) {
       case "audio-headset":
         return Icons.headset;
       default:
