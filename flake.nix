@@ -36,7 +36,9 @@
           xdotool
         ];
         dependencies = with pkgs; [
-          # dependencies for flutter
+          pcre
+          fontconfig
+          # Dependencies for flutter
           at-spi2-core.dev
           clang
           cmake
@@ -45,7 +47,7 @@
           # flutter
           gtk3
           libdatrie
-          libepoxy.dev
+          libepoxy
           libselinux
           libsepol
           libthai
@@ -57,7 +59,6 @@
           xorg.libXdmcp
           xorg.libXtst
           cairo.dev
-          # Dependencies for the flutter app
         ] ++ appdeps;
       in
       rec {
@@ -84,14 +85,17 @@
           '';
         };
 
-        devShells.default = pkgs.mkShell {
-          buildInputs = dependencies;
-          # based on
-          # https://discourse.nixos.org/t/flutter-run-d-linux-build-process-failed/16552/3#:~:text=The%20problem%20was%20that%20flutter%20does%20not%20use%20NixOS%20way%20to%20look%20for%20libraries%20during%20linking%20(most%20likely%20a%20bug%20in%20the%20package)%2C%20so%20LD_LIBRARY_PATH%2C%20which%20is%20unused%20on%20NixOS%20must%20be%20set
-          shellHook = ''
-            export LD_LIBRARY_PATH=${pkgs.libepoxy}/lib:$LD_LIBRARY_PATH
-            export PUB_CACHE="./.cache/pub_cache"
+        devShells.default = with pkgs; mkShell {
+          TMPDIR = "/path/to/temp/directory";
+          FLUTTER_BUILD_DIR = "/tmp";
+          NIX_LD_LIBRARY_PATH = lib.makeLibraryPath ([
+            stdenv.cc.cc
+            openssl
+          ] ++ dependencies);
+          NIX_LD = runCommand "ld.so" { } ''
+            ln -s "$(cat '${pkgs.stdenv.cc}/nix-support/dynamic-linker')" $out
           '';
+          buildInputs = dependencies;
         };
       }
     );

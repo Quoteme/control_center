@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:system_theme/system_theme.dart';
 
 /// With this class, we implement methods to get and set the theme
@@ -10,7 +11,7 @@ import 'package:system_theme/system_theme.dart';
 class LinuxSystemTheme {
   /// Static methd to swap between light and dark theme.
   static Future<void> toggle() async {
-    if (SystemTheme.isDarkMode) {
+    if (ThemeMode.system == ThemeMode.dark) {
       await Process.run("gsettings", [
         "set",
         "org.gnome.desktop.interface",

@@ -14,24 +14,13 @@ class LightDartThemeToggle extends StatefulWidget {
 }
 
 class _LightDartThemeToggleState extends State<LightDartThemeToggle> {
-  bool _is_light_theme = false;
-
   @override
   void initState() {
     super.initState();
-    syncValues();
-  }
-
-  Future<void> syncValues() async {
-    // get the output of `gsettings get org.gnome.desktop.interface color-scheme`
-    setState(() {
-      _is_light_theme = !SystemTheme.isDarkMode;
-    });
   }
 
   Future<void> toggle() async {
     await LinuxSystemTheme.toggle();
-    await syncValues();
   }
 
   @override
@@ -43,7 +32,7 @@ class _LightDartThemeToggleState extends State<LightDartThemeToggle> {
       child: Transform.scale(
         scaleY: -1,
         child: IconButton(
-          isSelected: _is_light_theme,
+          isSelected: ThemeMode.system == ThemeMode.dark,
           icon: const Icon(Icons.dark_mode_outlined),
           selectedIcon: const Icon(Icons.light_mode_outlined),
           tooltip: "Toggle Light/Dark Theme",
